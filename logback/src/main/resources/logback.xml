@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true">
+    <property name="log.dir" value="./logs"/>
+
+    <property name="logFormat" value="[%thread-%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level %C.%M:%L %msg %n"/>
+
+    <!-- 控制台打印日志 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${logFormat}</pattern>
+        </encoder>
+    </appender>
+    <!-- 日志输出到文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${log.dir}/logs.log</file>
+        <encoder>
+            　　　　　　
+            <pattern>${logFormat}</pattern>
+            　　　　
+        </encoder>
+        <append>true</append>
+    </appender>
+    <!-- 日志文件按照时间和大小分开记录  满1M分开    -->
+    <appender name="TIMESIZEROLLFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/log_time_size.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/%d{yyyyMMdd}/log_time_size.log._%i</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            　　　　　　
+            <pattern>${logFormat}</pattern>
+            　　　　
+        </encoder>
+        <append>true</append>
+    </appender>
+    <!-- 将日志写入数据库 -->
+    <appender name="DB-CLASSIC-MYSQL-POOL" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+            <dataSource class="org.apache.commons.dbcp.BasicDataSource">
+                <driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>
+                <url>jdbc:mysql://127.0.0.1:3306/my_logs?characterEncoding=utf-8&amp;serverTimezone=Asia/Shanghai</url>
+                <username>root</username>
+                <password>admin123</password>
+            </dataSource>
+        </connectionSource>
+    </appender>
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="DB-CLASSIC-MYSQL-POOL"/>
+    </root>
+</configuration>
